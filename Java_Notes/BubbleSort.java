@@ -4,7 +4,8 @@
 public class BubbleSort
 {
     public static void main(String[] args)
-    {
+    {	
+		System.out.println("一种遍历的排序,从前向后排序：");
         //选取左边的元素，和 右边的比较，如果是最值就交换，用此最值继续比较剩下的元素。最后最值从左到右。
         int num[] = {705,826,680,654,696};
         int c;
@@ -25,7 +26,8 @@ public class BubbleSort
         }
         System.out.println();
 
-
+		
+		System.out.print("冒泡排序一：");
         //冒泡排序，是根据相邻的两个数进行比较，最值进行交换，最后最值都在 最右边。
         int[] num2 = {705,826,680,654,696};
         for (int i=0;i<num2.length-1 ;i++ )//控制比较的轮数：n.length-1次
@@ -44,5 +46,25 @@ public class BubbleSort
         {
             System.out.print(num2[i]+" ");
         }
+
+		System.out.print("\n冒泡排序二：");
+		int[] num3 = {705,826,680,654,696};
+		for (int j=1; j<num.length ;j++ )
+		{
+			for (int i=0; i<num.length-j ;i++ )//考虑第一次是-1（最后一位已经排好序）,第二次是-2（倒数第二位已经排好序),...
+			{
+				if (num3[i] > num3[i+1])
+				{
+					c = num3[i];
+					num3[i] = num3[i+1];
+					num3[i+1] = c;
+				}
+			}
+		}
+		for (int i=0; i<num3.length ; i++ )
+		{
+			System.out.print(num3[i]+",");
+		}
+		
     }
 }
