@@ -54,7 +54,19 @@ def getMaxIncrSeriesList2(series_array):
     max_len_series =  max(series_list,key=lambda x:len(x))
     return len(max_len_series), max_len_series
 
+def most_length_inc_series(li):
+    if len(li) <= 1:
+        return len(li), li
+    cdr = [i for i in li if i > li[0]]
+    sub_len1, sub_li1 = most_length_inc_series(li[1:])
+    sub_len2, sub_li2 = most_length_inc_series(cdr)
+    if sub_len1 > sub_len2 + 1:
+        return sub_len1, sub_li1
+    else:
+        return sub_len2 + 1, [li[0]] + sub_li2
+
 if __name__ == "__main__":
     A = [1, 3, 5, 2, 4, 6, 7, 8,44,11]
-    print getMaxIncrSeriesList(A)
-    print getMaxIncrSeriesList2(A)
+    # print getMaxIncrSeriesList(A)
+    # print getMaxIncrSeriesList2(A)
+    print most_length_inc_series(A[:])
