@@ -83,10 +83,62 @@ def bubbleSort2(num_list):
                 num_list[i] ,num_list[i+1] = num_list[i+1],num_list[i]
     return num_list
 
+def shellSort(num_list):
+    """
+    希尔排序：改进的插入排序，不稳定。插入排序在初始的数据有序时，速度较快。为了在初始数比较乱时有更快的排序速度，就有了希尔排序。
+    希尔排序基本思想：首先选择一个步长，步长的两个值进行对比：
+                    1）对于大于步长的值可以逆向递减比较。（1）起始元素<--->起始元素索引+步长所在的元素。（2）起始元素+1<-->起始元素索引+步长所在的元素+1.。。。直到起始元素+1<步长(3)对于后边的元素进行逆向的递减步长判断
+                    2）或者进行步长的再次扩张进行比较。（1）起始元素<--->起始元素索引+步长所在的元素。（2）起始元素索引+步长+步长所在的元素。。。。（3）对于后边的元素进行逆向的递减步长判断
+                     最后当步长为1的时候，就是对整个序列进行排序。
+        步长的停止：最后一次的子列表，为分到步长的前一个元素。
+    程解思想：
+        首先设置步长为整个序列的一半（整除），然后每次减少一个步长，直到步长为0，退出。
+        比较方法:
+            当前元素i,步长step_size
+            s首先比较从num_list[i]到num_list[step_size-1],
+            对于后边没有比较到的，及索引值大于2*step_size-1的，每取一个值，就跟前边减去步长的对应的元素进行比较。
+    例子：  [4,6,3,8,1]  步长为2   4-3 6-8 比较
+            [3,6,4,8,1] 然后比较1-4
+            [3,6,1,8,4] 然后比较3-1
+            [1,6,3,8,4] 步长减少1，为1
+            []1-6不变；3--6交换[1,3,6,8,4]；3-1不变；8-6不变；4-8交换[1,3,6,4,8];4-6交换[1,3,4,6,8]
+    """
+    print("希尔排序一："),
+    length_list = len(num_list)
+    step_size = length_list/2
+    while step_size >0:
+        #进行步长间的值的比较
+        for i in range(step_size):
+            if num_list[i] > num_list[i+step_size]:
+                num_list[i],num_list[i+step_size] = num_list[i+step_size],num_list[i]
+                index = i-step_size
+                while index >= 0:
+                    if num_list[index] > num_list[index + step_size]:
+                        num_list[index], num_list[index + step_size] = num_list[index + step_size], num_list[index]
+                    index = index - step_size
+
+
+        # 比较超过一个步长的值
+        i+=1
+        while i+step_size < length_list:
+            if num_list[i] > num_list[i+step_size]:
+                num_list[i], num_list[i+step_size] = num_list[i+step_size], num_list[i]
+                index = i - step_size
+                while index >= 0:
+                    if num_list[index] > num_list[index + step_size]:
+                        num_list[index], num_list[index + step_size] = num_list[index + step_size], num_list[index]
+                    index = index - step_size
+            i+= 1
+
+        # 每次步长递减
+        step_size -= 1
+    return num_list
+
 if __name__ == "__main__":
-    num_list = [12, 44, 13, 67, 11, 556, 6]
+    num_list = [12, 44, 13, 67, 11, 556, 6,3]
     print(insertionSort(num_list[:]))
     print(insertionSort2(num_list[:]))
     print(insertionSort3(num_list[:]))
     print(bubbleSort(num_list[:]))
     print(bubbleSort2(num_list[:]))
+    print(shellSort(num_list[:]))
