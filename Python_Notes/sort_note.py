@@ -185,13 +185,50 @@ def shellSort3(num_list):
         step = step/2#每次用新的步长
     return num_list
 
+def quickSort(num_list,left,right):
+    """
+    快速排序：
+        思想：分治法，将一个序列分成两个子序列。
+              1：选取第一个元素作为标尺。（看做将其取出）
+              2：小于标尺元素的所有元素，放在左边。大于标尺元素的所有元素，放在右边。
+              3：每次比较的时候，当与标尺元素进行交换的时候 ，比较的方向要发生变化，因为另一个方向的元素 是已经比较完的，所以需要变换方向。
+                一直比较到左，右的索引值相等。
+
+    """
+    if left >= right :
+        return None
+    key = num_list[left] #基准元素-标尺
+    low = left           #记住需要比较的范围
+    high = right
+
+    while left < right:
+        while left < right and num_list[right] >= key: #当右边数据比基准数据key大
+            right -= 1
+        num_list[left]= num_list[right] #此时将数据进行交换，标尺相当于放到num_list[right]然后又取出来，所以没写。
+        while left < right and num_list[left] <= key: #转换比较的方向
+            left += 1
+        num_list[right] = num_list[left]
+    num_list[right] = key
+    quickSort(num_list,low,left-1)
+    quickSort(num_list,left+1,high)
+    return num_list
+
+def quickSort2(num_list):
+    if len(num_list) == 0:
+        return []
+    else:
+        return quickSort2([x for x in num_list[1:] if x < num_list[0]]) + [num_list[0]] + quickSort2([x for x in num_list[1:] if x > num_list[0]])
+
+
 if __name__ == "__main__":
     num_list = [12, 44, 13, 67, 11, 556, 6,3,77]
-    print(insertionSort(num_list[:]))
-    print(insertionSort2(num_list[:]))
-    print(insertionSort3(num_list[:]))
-    print(bubbleSort(num_list[:]))
-    print(bubbleSort2(num_list[:]))
-    print(shellSort(num_list[:]))
-    print(shellSort2(num_list[:]))
-    print(shellSort3(num_list[:]))
+    # print(insertionSort(num_list[:]))
+    # print(insertionSort2(num_list[:]))
+    # print(insertionSort3(num_list[:]))
+    # print(bubbleSort(num_list[:]))
+    # print(bubbleSort2(num_list[:]))
+    # print(shellSort(num_list[:]))
+    # print(shellSort2(num_list[:]))
+    # print(shellSort3(num_list[:]))
+    print(quickSort(num_list[:],0,len(num_list)-1))
+    print(quickSort2(num_list[:]))
