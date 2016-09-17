@@ -226,6 +226,7 @@ def directselectSort(num_list):
                  第2趟，在待排序记录r[2] ~ r[n]中选出最小的记录，将它与r[2]交换；
                  以此类推，第i趟在待排序记录r[i] ~ r[n]中选出最小的记录，将它与r[i]交换，使有序序列不断增长直到全部排序完毕。
     """
+    print("直接选择排序："),
     for i in range(len(num_list)):
         min = i
         for j in  range(i+1,len(num_list)):
@@ -234,6 +235,89 @@ def directselectSort(num_list):
         if min !=i:
             num_list[i],num_list[min] = num_list[min],num_list[i]
     return num_list
+
+def heapSort(num_list):
+    """
+    堆排序(Heapsort)是指利用堆积树（堆）这种数据结构所设计的一种排序算法，它是选择排序的一种。
+    大根堆的要求是每个节点的值都不大于其父节点的值.
+    二叉树:是每个节点最多有两个子树的树结构。通常子树被称作“左子树”（left subtree）和“右子树”（right subtree）
+           满二叉树：一棵深度为 k，且有 2k - 1 个节点称之为满二叉树
+           完全二叉树：虽然不是满二叉树，但是拥有的节点和满二叉树对应。除了最底层之外，每一层都是满的。叶子从左向右。
+    树和二叉树的三个主要差别：
+        树的结点个数至少为 1，而二叉树的结点个数可以为 0
+        树中结点的最大度数没有限制，而二叉树结点的最大度数为 2
+        树的结点无左、右之分，而二叉树的结点有左、右之分
+    堆（二叉堆）可以视为一棵完全的二叉树
+    堆排序就是把最大堆堆顶的最大数取出，将剩余的堆继续调整为最大堆，再次将堆顶的最大数取出，这个过程持续到剩余数只有一个时结束。在堆中定义以下几种操作：
+        最大堆调整（Max-Heapify）：将堆的末端子节点作调整，使得子节点永远小于父节点
+        创建最大堆（Build-Max-Heap）：将堆所有数据重新排序，使其成为最大堆
+        堆排序（Heap-Sort）：移除位在第一个数据的根节点，并做最大堆调整的递归运算
+
+    在完全二插树中节点的编号：父节点A,左子节点2A+1,右子节点2A+2.(节点编号从0开始，对应列表的编号。)
+        加入拿到一个节点编号为5，那么它的左右孩子编号为11,12，父节点的编号为2.
+    堆是完全二叉树，最大值在数组的第0位；在需要排序即堆排序的时候，将最大值第0位的值和最后一位的值进行交换。
+        然后除了最后一位重新建堆，再进行交换，最后列表都被排序。
+
+    总体实现步骤：
+    1：调整为最大堆：父节点大于任意一个子节点。
+    2：创建堆：从数组最后一个节点到根节点，进行调整为最大堆
+    3:堆排序：由于最大堆的最大值在第一位，将第一位和最后一位进行替换。然后重新创建堆。最后将数组都进行了排序。
+    """
+    print("堆排序："),
+    def heapify(A,i,size):
+        """
+        规范二叉树数据：让父节点大于子 节点
+            在一个子树，将最大值换到父节点的位置
+        :param A: 完全二叉树--堆数组
+        :param i: 看中的那个父节点
+        :param size: 节点总数(堆数组的长度)--目的是防止判断左右孩子的时候出界限
+        """
+        if i >= size:
+            return None
+        left = 2*i + 1   #左孩子
+        right = 2*i + 2  #右孩子
+        largest = i  # 最大值
+
+        if left < size:
+            if A[largest] < A[left]:
+                largest = left
+        if right<size:
+            if A[largest] < A[right]:
+                largest = right
+
+        if largest != i:#交换判断
+            A[largest],A[i] = A[i],A[largest]
+            heapify(A,largest,size) #对于交换过的子节点，进行其作为父节点的二叉树的交换比对。
+
+    def create_heapify(A,size):
+        """
+        创建堆：从最后一个节点进行堆的创建。
+            从堆数组最后一个节点，到根节点，对于每一个节点都做一个heapify（保证父节点值最大）
+        :param A:堆数组
+        :param size:堆数组的大小
+        最后显示的结果中数组的第一个元素是最大的。
+        """
+        for i in range(size-1,-1,-1): #从后向前选取一个节点，比对每一个节点和其子节点，将最大值放到父节点。
+            heapify(A,i,size)
+
+    def heap_sort(A,size):
+        """
+        堆排序 : 每次创建堆，然后堆的最大值放到最后，然后除了最后一个值，重新迭代堆的创建和最大值的提取。
+        :param A: 堆数组
+        :param size: 堆数组的大小
+        首先由堆A，将索引0（即最大值）和最后一个索引位置进行交换，
+                    此时的堆长度为size-1,由于进行了交换，小的值在第一位，所以需要 重新建堆。
+                    然后再进行最大值（index=0）和最后一位(index=-1)的交换。
+        """
+        for i in range(size-1,0,-1): #这个范围到i=1,因为i=0时，就只有一个元素，就不用对比了
+            create_heapify(A,i+1)#首先建立堆
+            A[0],A[i] = A[i],A[0] #每次将根节点和数组最后的数字进行交换 。由于堆得最大值一直是A[0]，交换后的位置 就是排序好的数据。
+
+
+    heap_sort(num_list,len(num_list))
+    # create_heapify(num_list,len(num_list))#测试堆的创建
+    return num_list
+
 
 
 if __name__ == "__main__":
@@ -251,3 +335,4 @@ if __name__ == "__main__":
     # print("快速排序二："),
     # print(quickSort2(num_list[:]))
     print(directselectSort(num_list[:]))
+    print(heapSort(num_list[:]))
