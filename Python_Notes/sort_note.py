@@ -1,4 +1,13 @@
 #coding:utf-8
+import time
+
+def usetimeDecorate(fun):
+    def wrapper(num_list):
+        start_time = time.time()
+        num_list = fun(num_list)
+        print "Time:",time.time() - start_time
+        return num_list
+    return wrapper
 
 def insertionSort(num_list):
     """
@@ -98,7 +107,7 @@ def shellSort(num_list):
             s首先比较从num_list[i]到num_list[step_size-1],
             对于后边没有比较到的，及索引值大于2*step_size-1的，每取一个值，就跟前边减去步长的对应的元素进行比较。
     例子：  [4,6,3,8,1]  步长为2   4-3 6-8 比较
-            [3,6,4,8,1] 然后比较1-4
+            [3,6,4,8,1] 然后比较1-4  ，如果没有发生交换，就不用继续向前比较。
             [3,6,1,8,4] 然后比较3-1
             [1,6,3,8,4] 步长减少1，为1
             []1-6不变；3--6交换[1,3,6,8,4]；3-1不变；8-6不变；4-8交换[1,3,6,4,8];4-6交换[1,3,4,6,8]
@@ -111,12 +120,6 @@ def shellSort(num_list):
         for i in range(step_size):
             if num_list[i] > num_list[i+step_size]:
                 num_list[i],num_list[i+step_size] = num_list[i+step_size],num_list[i]
-                index = i-step_size
-                while index >= 0:
-                    if num_list[index] > num_list[index + step_size]:
-                        num_list[index], num_list[index + step_size] = num_list[index + step_size], num_list[index]
-                    index = index - step_size
-
 
         # 比较超过一个步长的值
         i+=1
@@ -127,18 +130,68 @@ def shellSort(num_list):
                 while index >= 0:
                     if num_list[index] > num_list[index + step_size]:
                         num_list[index], num_list[index + step_size] = num_list[index + step_size], num_list[index]
-                    index = index - step_size
+                        index = index - step_size
+                    else:
+                        break
             i+= 1
 
         # 每次步长递减
         step_size -= 1
     return num_list
 
+def shellSort2(num_list):
+    """
+    每次比较的时候，根据步长来比较，最后一次比较的步长为1
+    每次比较的时候，选取基准索引和索引+一个或者多个步长的元素进行比较。
+    """
+    print("希尔排序二："),
+    length_list = len(num_list)
+    step = length_list/2
+    while step>0:
+        for i in range(step):
+            index = i
+            while index+step  < length_list: #判断i,i+step，i+step+step。。。一直判断到最后的索引+step大于list的长度。取得值是 从第i个元素和对应的i+多个步长所在的元素。
+                # print num_list, num_list[index],num_list[index+step]
+                if num_list[index] > num_list[index+step]:
+                    num_list[index],num_list[index+step] = num_list[index+step],num_list[index]
+                index = index+step
+        step -= 1
+    return num_list
+
+
+def shellSort3(num_list):
+    """
+    正确的希尔排序：
+        步长的选择是希尔排序的重要部分。只要最终步长为1任何步长序列都可以工作。
+        当步长为1时，算法变为插入排序，这就保证了数据一定会被排序。
+        Donald Shell最初建议步长选择为 n/2,并且对步长取半直到步长达到1。
+    排序思想:先选取步长的元素进行比对（插入排序），通过逐渐减少步长（步长的选取最后一次一定为1--插入排序）来进行排序。
+        是改进的插入排序，插入排序在数据有序的时候排序的速度会更快。因为插入排序比较的是前边已经排序好的序列。
+    """
+    print("希尔排序三："),
+    length_list = len(num_list)
+    step = length_list/2
+
+    while step > 0:
+        for index in range(0,step): #进行某个步长内的元素的遍历排序。
+            while index+step < length_list:
+                while index>=0: #插入排序，和前边的已经排序好的比较.
+                    if num_list[index] > num_list[index+step]:
+                        num_list[index],num_list[index+step] = num_list[index+step],num_list[index]
+                        index = index - step         #选取交换的元素与前边已经排序好的元素进行比较。
+                    else:
+                        break                       #前边的元素已经有序，就不用再比对（这是插入排序的重要特点）
+                index = index + step
+        step = step/2#每次用新的步长
+    return num_list
+
 if __name__ == "__main__":
-    num_list = [12, 44, 13, 67, 11, 556, 6,3]
+    num_list = [12, 44, 13, 67, 11, 556, 6,3,77]
     print(insertionSort(num_list[:]))
     print(insertionSort2(num_list[:]))
     print(insertionSort3(num_list[:]))
     print(bubbleSort(num_list[:]))
     print(bubbleSort2(num_list[:]))
     print(shellSort(num_list[:]))
+    print(shellSort2(num_list[:]))
+    print(shellSort3(num_list[:]))
