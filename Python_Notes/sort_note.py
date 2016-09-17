@@ -219,6 +219,22 @@ def quickSort2(num_list):
     else:
         return quickSort2([x for x in num_list[1:] if x < num_list[0]]) + [num_list[0]] + quickSort2([x for x in num_list[1:] if x > num_list[0]])
 
+def directselectSort(num_list):
+    """
+    直接选择排序：(每次选择最小的数)
+        基本思想：第1趟，在待排序记录r[1] ~ r[n]中选出最小的记录，将它与r[1]交换；
+                 第2趟，在待排序记录r[2] ~ r[n]中选出最小的记录，将它与r[2]交换；
+                 以此类推，第i趟在待排序记录r[i] ~ r[n]中选出最小的记录，将它与r[i]交换，使有序序列不断增长直到全部排序完毕。
+    """
+    for i in range(len(num_list)):
+        min = i
+        for j in  range(i+1,len(num_list)):
+            if num_list[j] < num_list[min]:
+                min = j
+        if min !=i:
+            num_list[i],num_list[min] = num_list[min],num_list[i]
+    return num_list
+
 
 if __name__ == "__main__":
     num_list = [12, 44, 13, 67, 11, 556, 6,3,77]
@@ -229,6 +245,9 @@ if __name__ == "__main__":
     # print(bubbleSort2(num_list[:]))
     # print(shellSort(num_list[:]))
     # print(shellSort2(num_list[:]))
-    # print(shellSort3(num_list[:]))
-    print(quickSort(num_list[:],0,len(num_list)-1))
-    print(quickSort2(num_list[:]))
+    # # print(shellSort3(num_list[:]))
+    # print("快速排序一："),
+    # print(quickSort(num_list[:],0,len(num_list)-1))
+    # print("快速排序二："),
+    # print(quickSort2(num_list[:]))
+    print(directselectSort(num_list[:]))
